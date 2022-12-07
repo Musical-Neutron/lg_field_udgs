@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Place import files below
-import os
 import warnings
 
 import matplotlib.pyplot as plt
@@ -9,8 +8,7 @@ import numpy as np
 
 from common_functions import make_cumulative_function, save_figures
 from process_data import LGData, UDGData
-from universal_settings import (d_lg, data_dir, lg_galaxy_data_file, sim_ids,
-                                sim_styles)
+from universal_settings import (d_lg, lg_galaxy_data_file, sim_ids, sim_styles)
 
 
 def main():
