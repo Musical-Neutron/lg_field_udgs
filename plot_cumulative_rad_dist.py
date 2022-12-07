@@ -8,7 +8,7 @@ import numpy as np
 
 from common_functions import make_cumulative_function, save_figures
 from process_data import LGData, UDGData
-from universal_settings import (d_lg, lg_galaxy_data_file, sim_ids, sim_styles)
+from universal_settings import d_lg, lg_galaxy_data_file, sim_ids, sim_styles
 
 
 def main():
