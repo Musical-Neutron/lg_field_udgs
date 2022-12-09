@@ -2,12 +2,15 @@
 
 # Place import files below
 import copy
+
 import h5py
 import numpy as np
+
 from common_functions import survey_cone
-from universal_settings import (d_lg, sim_n_part, sim_ids, fiducial_lg_mass,
-                                generated_data_file_template, survey_data_file)
 from process_data import UDGData
+from universal_settings import (d_lg, fiducial_lg_mass,
+                                generated_data_file_template, sim_ids,
+                                sim_n_part, survey_data_file)
 
 
 def main():
