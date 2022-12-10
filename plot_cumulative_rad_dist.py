@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 # Place import files below
-import warnings
-
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -12,7 +10,6 @@ from universal_settings import d_lg, lg_galaxy_data_file, sim_ids, sim_styles
 
 
 def main():
-    warnings.filterwarnings(action='ignore', category=RuntimeWarning)
     # Plot settings
     try:
         plt.style.use('./paper.mplstyle')

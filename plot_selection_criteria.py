@@ -14,7 +14,7 @@ from universal_settings import (ax_limit_edge_adjustment, mu_e, mu_e2, reff,
 
 
 def main():
-    warnings.filterwarnings(action='ignore', category=RuntimeWarning)
+    # warnings.filterwarnings(action='ignore', category=RuntimeWarning)
     # Plot settings
     try:
         plt.style.use('./paper.mplstyle')
