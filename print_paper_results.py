@@ -9,7 +9,7 @@ import numpy as np
 from process_data import UDGData
 from universal_settings import (d_lg, fiducial_lg_mass,
                                 generated_data_file_template, sim_ids,
-                                sim_n_part, target_lg_masses)
+                                sim_n_part, target_lg_masses, zoa_extent_list)
 
 
 def main():
@@ -34,6 +34,7 @@ def main():
     n_field_by_tmlg = []
     nudg_tot_by_tmlg = []
     nudg_mock_sdss_by_tmlg = [[] for _ in udg_data_selection]
+    fudg_in_zoa_by_b = [[] for _ in udg_data_selection]
 
     # Iterate over simulations
     for sim_i, sim_id in enumerate(sim_ids):
@@ -51,31 +52,39 @@ def main():
                     d_selection][()]
                 rescaled_nudg_sdss_m31 = h5_file['M31']['Rescaled N_UDG,SDSS'][
                     d_selection][()]
+                fudg_zoa_mw = h5_file['MW']['f_UDG in ZoA'][d_selection][()]
+                fudg_zoa_m31 = h5_file['M31']['f_UDG in ZoA'][d_selection][()]
 
-                # Compile mock SDSS observations
+                # Compile mock SDSS observations and f_UDG in ZoA
                 if sim_i > 0:
                     nudg_mock_sdss_by_tmlg[d_i] = np.concatenate(
                         (nudg_mock_sdss_by_tmlg[d_i],
                          np.concatenate(
                              (rescaled_nudg_sdss_mw, rescaled_nudg_sdss_m31))))
+                    fudg_in_zoa_by_b[d_i] = np.concatenate(
+                        (fudg_in_zoa_by_b[d_i],
+                         np.concatenate((fudg_zoa_mw, fudg_zoa_m31))))
                 else:
                     nudg_mock_sdss_by_tmlg[d_i] = np.concatenate(
                         (rescaled_nudg_sdss_mw, rescaled_nudg_sdss_m31))
+                    fudg_in_zoa_by_b[d_i] = np.concatenate(
+                        (fudg_zoa_mw, fudg_zoa_m31))
 
     # Compile data into single arrays
     n_field_by_tmlg = np.asarray(n_field_by_tmlg)
     nudg_tot_by_tmlg = np.asarray(nudg_tot_by_tmlg)
     nudg_mock_sdss_by_tmlg = np.asarray(nudg_mock_sdss_by_tmlg)
+    fudg_in_zoa_by_b = np.asarray(fudg_in_zoa_by_b)
 
     ####################################################################
     # Print total number of field galaxies
     print("#" * 50)
     print("Total number of field galaxies")
-    for t_i, t_mass in enumerate(target_lg_masses):
-        med_field = np.nanmedian(n_field_by_tmlg[:, t_i])
+    for z_i, b_extent in enumerate(target_lg_masses):
+        med_field = np.nanmedian(n_field_by_tmlg[:, z_i])
         field_pm = np.around(np.sqrt(med_field))
         print("M_LG(< {0} Mpc) = {1:.0f} x 10^12 Msun: {2:d}^+{3:d}_-{3:d}".
-              format(d_lg, t_mass / 1.e12, int(med_field), int(field_pm)))
+              format(d_lg, b_extent / 1.e12, int(med_field), int(field_pm)))
     print()
 
     ####################################################################
@@ -87,12 +96,12 @@ def main():
     print_fields = "{:>7d}^+{:d}_-{:d}" * len(selection)
     print("M_LG(< {0} Mpc)".format(d_lg) +
           selection_fields.format(*udg_data_selection))
-    for t_i, t_mass in enumerate(target_lg_masses):
-        med_field = np.nanmedian(nudg_tot_by_tmlg[:, t_i], axis=0)
+    for z_i, b_extent in enumerate(target_lg_masses):
+        med_field = np.nanmedian(nudg_tot_by_tmlg[:, z_i], axis=0)
         field_pm = np.around(np.sqrt(med_field))
         print_data = np.column_stack(
             (med_field, field_pm, field_pm)).reshape(len(med_field) * 3)
-        print("{:.0f} x 10^12 Msun".format(t_mass / 1.e12) +
+        print("{:.0f} x 10^12 Msun".format(b_extent / 1.e12) +
               print_fields.format(*np.int16(print_data)))
     print()
 
@@ -105,13 +114,13 @@ def main():
     print_fields = "{:>6d}^+{:d}_{:d}" * len(selection)
     print("M_LG(< {0} Mpc)".format(d_lg) +
           selection_fields.format(*udg_data_selection))
-    for t_i, t_mass in enumerate(target_lg_masses):
-        med_field = np.nanmedian(nudg_mock_sdss_by_tmlg[:, :, t_i], axis=1)
+    for z_i, b_extent in enumerate(target_lg_masses):
+        med_field = np.nanmedian(nudg_mock_sdss_by_tmlg[:, :, z_i], axis=1)
         percentiles = np.nanpercentile(
-            nudg_mock_sdss_by_tmlg[:, :, t_i], [84., 16.], axis=1) - med_field
+            nudg_mock_sdss_by_tmlg[:, :, z_i], [84., 16.], axis=1) - med_field
         print_data = np.column_stack(
             (med_field, *percentiles)).reshape(len(med_field) * 3)
-        print("{:.0f} x 10^12 Msun ".format(t_mass / 1.e12) +
+        print("{:.0f} x 10^12 Msun ".format(b_extent / 1.e12) +
               print_fields.format(*np.int16(print_data)))
     print()
 
@@ -155,6 +164,24 @@ def main():
     #         print("N = {:2d}:    ".format(int(n)) + fields.format(*frac))
     #     print()
     # print("#" * 50)
+
+    ####################################################################
+    # Print fraction of UDGs in ZoA
+    print("Fraction of field UDGs coincident with ZoA")
+    selection = np.arange(len(udg_selection_criteria)) + 1
+    selection_fields = "{:>22}" * len(selection)
+    print_fields = "{:>8.3f}^+{:.3f}_{:.3f}" * len(selection)
+    print("ZoA extent" + " " * 6 +
+          selection_fields.format(*udg_data_selection))
+    for z_i, b_extent in enumerate(zoa_extent_list):
+        med_field = np.nanmedian(fudg_in_zoa_by_b[:, :, z_i], axis=1)
+        percentiles = np.nanpercentile(fudg_in_zoa_by_b[:, :, z_i], [84., 16.],
+                                       axis=1) - med_field
+        print_data = np.column_stack(
+            (med_field, *percentiles)).reshape(len(med_field) * 3)
+        print("|b| <= {:4.1f} deg ".format(b_extent) +
+              print_fields.format(*print_data))
+    print()
 
     return None
 
