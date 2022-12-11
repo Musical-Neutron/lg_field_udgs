@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
 # Place import files below
-import copy
-
 import h5py
 import numpy as np
 
