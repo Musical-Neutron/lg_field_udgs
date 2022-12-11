@@ -23,10 +23,10 @@ def main():
     # Load simulation data for Fig. 3
     udg_data = UDGData()
     data_list = [
-        'simulation_id', 'halo_ids', 'select_udgs_reff2_mu2',
-        'select_gal_mstar_nstar', 'dist_from_mw', 'dist_from_midpoint'
+        'simulation_id', 'select_udgs_reff2_mu2', 'select_gal_mstar_nstar',
+        'dist_from_mw', 'dist_from_midpoint'
     ]
-    (simulation_id, halo_ids, select_udgs_reff2_mu2, select_gal_mstar_nstar,
+    (simulation_id, select_udgs_reff2_mu2, select_gal_mstar_nstar,
      dist_from_mw, dist_from_midpoint) = udg_data.retrieve_data(data_list)
 
     # Read observational data

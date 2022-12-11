@@ -2,14 +2,16 @@
 
 # Place import files below
 import copy
+
 import h5py
-from scipy.interpolate import interp1d
 import numpy as np
-from common_functions import (convert_Lsun_to_abs_mag,
-                              convert_Lsun_per_pc_to_mag_arcsec, v_sphere)
-from universal_settings import (b_mvir_ratio, min_particles, max_mstar, mu_e,
-                                mu_e2, reff, reff2, d_lg, sim_n_part, sim_ids,
-                                min_mstar, udg_file_template)
+from scipy.interpolate import interp1d
+
+from common_functions import (convert_Lsun_per_pc_to_mag_arcsec,
+                              convert_Lsun_to_abs_mag, v_sphere)
+from universal_settings import (b_mvir_ratio, d_lg, max_mstar, min_mstar,
+                                min_particles, mu_e, mu_e2, reff, reff2,
+                                sim_ids, sim_n_part, udg_file_template)
 
 
 def distance_from_dist_mod(distance_modulus):
