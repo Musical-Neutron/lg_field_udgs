@@ -52,6 +52,8 @@ figures in the paper. There are eight files:
 * [8192_17_11_z0_paper_data.hdf5](/data/8192_17_11_z0_paper_data.hdf5)
 * [8192_37_11_z0_paper_data.hdf5](/data/8192_37_11_z0_paper_data.hdf5)
   * All contain the data on which the paper is based
+* [8192_lg_2.5Mpc_volume_mass.csv](/data/8192_lg_2.5Mpc_volume_mass.csv)
+  * Contains the masses of each LG volume
 * [fattahi_2020_N_vs_M.csv](/data/fattahi_2020_N_vs_M.csv)
   * Contains relevant data from [Fattahi et al. (2020)](https://arxiv.org/abs/1907.02463)
 * [k08_mag_d_data.csv](/data/k08_mag_d_data.csv)
