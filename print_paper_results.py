@@ -171,7 +171,7 @@ def main():
     selection = np.arange(len(udg_selection_criteria)) + 1
     selection_fields = "{:>22}" * len(selection)
     print_fields = "{:>8.3f}^+{:.3f}_{:.3f}" * len(selection)
-    print("ZoA extent" + " " * 6 +
+    print("ZoA extent" + " " * 7 +
           selection_fields.format(*udg_data_selection))
     for z_i, b_extent in enumerate(zoa_extent_list):
         med_field = np.nanmedian(fudg_in_zoa_by_b[:, :, z_i], axis=1)
