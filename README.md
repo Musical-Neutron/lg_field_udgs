@@ -17,23 +17,23 @@ There are six scripts that can be executed independently:
   * Generates the data required for some of the figures in the paper.
   Primarily concerns preparing the data for the mock SDSS observations.
   * MUST be run first to ensure that the other scripts operate correctly.
-* Fig. 1: [01_plot_selection_criteria.py](/01_plot_selection_criteria.py)
+* Fig. 1: [fig_01_plot_selection_criteria.py](/fig_01_plot_selection_criteria.py)
   * Plots effective radius, R<sub>e</sub>, vs. effective surface brightness,
   &mu;<sub>e</sub>, of all candidate UDGs.
-* Fig. 3: [03_plot_cumulative_rad_dist.py](/03_plot_cumulative_rad_dist.py)
+* Fig. 3: [fig_03_plot_cumulative_rad_dist.py](/fig_03_plot_cumulative_rad_dist.py)
   * Plots the cumulative number of UDGs as a function of distance from the
   Milky Way (MW) halo analogue. By convention this is the smaller of the two
   primary haloes.
-* Fig. 4: [04_plot_luminosity_functions.py](/04_plot_luminosity_functions.py)
+* Fig. 4: [fig_04_plot_luminosity_functions.py](/fig_04_plot_luminosity_functions.py)
   * Plots the luminosity function of the UDG populations as a function of
   _V_-band absolute and apparent magnitudes.
-* Fig. 5: [05_plot_mock_sdss_observations.py](/05_plot_mock_sdss_observations.py)
+* Fig. 5: [fig_05_plot_mock_sdss_observations.py](/fig_05_plot_mock_sdss_observations.py)
   * Plots the luminosity functions of UDGs that are detectable in SDSS-like
   surveys in each HESTIA high resolution simulation.
 * [print_paper_results.py](/print_paper_results.py)
   * Prints information relevant to the paper to stdout.
 
-There is also a master script, [plot_paper_plots.py](/plot_paper_plots.py),
+There is also a master script, [run_all_scripts.py](/run_all_scripts.py),
 that will run all of the above scripts when executed. This produces .svg
 and .pdf versions of each figure in the paper.
 
