@@ -12,6 +12,7 @@ import print_paper_results
 def main():
     # Generate paper data
     print("Generating paper data")
+    print("Note: this step is slow...")
     generate_paper_results.main()
 
     # Plot Fig. 1
