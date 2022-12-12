@@ -17,7 +17,7 @@ from universal_settings import (
 
 
 def main():
-    np.random.seed(10)
+    np.random.seed(50)
     # Load relevant simulation data
     udg_data = UDGData()
     data_list = [
