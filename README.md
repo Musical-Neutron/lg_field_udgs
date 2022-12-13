@@ -60,7 +60,8 @@ figures in the paper. There are eight files:
 * [k08_mu_d_data.csv](/data/k08_mu_d_data.csv)
   * Both contain relevant data from [Koposov et al. (2008)](https://arxiv.org/abs/0706.2687)
 * [mcconnachie_2012_data.csv](/data/mcconnachie_2012_data.csv)
-  * Contains data from [McConnachie et al. (2012)](https://arxiv.org/abs/1204.1562), including updates from the [Nearby Dwarf Database](https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/community/nearby/)
+  * Contains data from [McConnachie et al. (2012)](https://arxiv.org/abs/1204.1562),
+  including updates from the [Nearby Dwarf Database](https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/community/nearby/)
 * [survey_data.csv](/data/survey_data.csv)
   * Contains data relevant to the SDSS (and other surveys)
 
@@ -70,11 +71,15 @@ This code and the accompanying data are freely available.
 
 ### If you use this code or derivative work
 
-* Please cite this repository, and the accompanying <i>Letter</i>
+* [O. Newton et al. (2022)](http://arxiv.org/abs/2212.05066)
+* Please cite this repository (the up-to-date version will be archived in
+Zenodo upon acceptance)
 
 ### If you use these data, a derivative work, or results thereof
 
-* Please cite this repository, and the accompanying <i>Letter</i>
+* [O. Newton et al. (2022)](http://arxiv.org/abs/2212.05066)
+* Please cite this repository (the up-to-date version will be archived in
+Zenodo upon acceptance)
 * [N. Libeskind et al. (2020)](https://doi.org/10.1093/mnras/staa2541)
 
 If you have any questions or would like help in using the scripts, please
