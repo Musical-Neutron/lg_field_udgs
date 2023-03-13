@@ -5,13 +5,16 @@ import copy
 
 import h5py
 import numpy as np
+from astropy import units as u
+from astropy.coordinates import SkyCoord
 from scipy.interpolate import interp1d
 
 from common_functions import (convert_Lsun_per_pc_to_mag_arcsec,
                               convert_Lsun_to_abs_mag, v_sphere)
 from universal_settings import (b_mvir_ratio, d_lg, max_mstar, min_mstar,
-                                min_particles, mu_e, mu_e2, reff, reff2,
-                                sim_ids, sim_n_part, udg_file_template)
+                                min_star_particles, mu_e, mu_e2, obs_m31_r200,
+                                obs_mw_r200, reff, reff2, sim_ids, sim_n_part,
+                                udg_file_template)
 
 
 def distance_from_dist_mod(distance_modulus):
@@ -23,7 +26,7 @@ def distance_from_dist_mod(distance_modulus):
     Returns:
         fl/arr: Distance to an object.
     """
-    return 10.**((distance_modulus + 5.) / 5.)  # Mpc
+    return 10.**((distance_modulus + 5.) / 5.)  # pc
 
 
 class FattahiData(object):
@@ -86,7 +89,9 @@ class LGData(object):
             None
         """
         self.select_lg_volume = self.dist <= (d_lg * 1.e3)
-        self.select_mw_satellites = self.dist <= 250.  # kpc
+        self.select_mw_satellites = self.dist <= obs_mw_r200  # kpc
+        self.select_m31_satellites = (
+            (self.dist_m31 <= obs_m31_r200) * (self.dist_m31 > 0))  # kpc
 
         # Same stellar mass range as our analysis
         self.select_stellar_mass = ((self.m_star >= min_mstar) *
@@ -116,20 +121,77 @@ class LGData(object):
         self.abs_vmag = self.app_vmag - self.dist_mod
         self.luminosity = 10.**(-0.4 * (self.abs_vmag - 4.81))  # Lsun
         self.m_star = copy.deepcopy(self.luminosity)  # [Msun], Assumes M/L = 1
+
+        c = SkyCoord(np.sum(self.ra * (1., 1. / 60., 1. / 3600.) * u.hourangle,
+                            axis=1),
+                     np.sum(self.dec * (u.deg, u.arcmin, u.arcsec), axis=1),
+                     distance=self.dist * u.kpc)
+        c_errplus = SkyCoord(np.sum(self.ra * (1., 1. / 60., 1. / 3600.) *
+                                    u.hourangle,
+                                    axis=1),
+                             np.sum(self.dec * (u.deg, u.arcmin, u.arcsec),
+                                    axis=1),
+                             distance=self.dist_errplus * u.kpc)
+        c_errminus = SkyCoord(np.sum(self.ra * (1., 1. / 60., 1. / 3600.) *
+                                     u.hourangle,
+                                     axis=1),
+                              np.sum(self.dec * (u.deg, u.arcmin, u.arcsec),
+                                     axis=1),
+                              distance=self.dist_errminus * u.kpc)
+        mw_c = SkyCoord(np.sum(self.ra[self.mw_idx] *
+                               (1., 1. / 60., 1. / 3600.) * u.hourangle),
+                        np.sum(self.dec[self.mw_idx] *
+                               (u.deg, u.arcmin, u.arcsec)),
+                        distance=self.dist[self.mw_idx] * u.kpc)
+        m31_c = SkyCoord(np.sum(self.ra[self.m31_idx] *
+                                (1., 1. / 60., 1. / 3600.) * u.hourangle),
+                         np.sum(self.dec[self.m31_idx] *
+                                (u.deg, u.arcmin, u.arcsec)),
+                         distance=self.dist[self.m31_idx] * u.kpc)
+
+        dists_from_mw = np.column_stack(
+            (c.separation_3d(mw_c).value, c_errminus.separation_3d(mw_c).value,
+             c_errplus.separation_3d(mw_c).value))  # kpc
+        dists_from_m31 = np.column_stack(
+            (c.separation_3d(m31_c).value,
+             c_errminus.separation_3d(m31_c).value,
+             c_errplus.separation_3d(m31_c).value))  # kpc
+
+        (self.dist_errminus_rel_mw, self.dist_rel_mw,
+         self.dist_errplus_rel_mw) = np.sort(dists_from_mw, axis=1).T
+        (self.dist_errminus_rel_m31, self.dist_rel_m31,
+         self.dist_errplus_rel_m31) = np.sort(dists_from_m31, axis=1).T
+
         return None
 
     def _read_data(self):
         """Reads data from data_file.
 
+        Args:
+            host_info (bool): Flag to read in host galaxy data. Defaults
+                to False.
+
         Returns:
             None
         """
         obs_lg_galaxy_data = np.genfromtxt(self.lg_galaxy_data_file)
-        self.dist_mod = obs_lg_galaxy_data[:, 8]
-        self.dist_mod_errplus = obs_lg_galaxy_data[:, 9]
-        self.dist_mod_errminus = obs_lg_galaxy_data[:, 10]
-        self.app_vmag = obs_lg_galaxy_data[:, 14]
-        self.select_m31_satellites = obs_lg_galaxy_data[:, -1].astype(bool)
+        self.ra = obs_lg_galaxy_data[:, [1, 2, 3]]
+        self.dec = obs_lg_galaxy_data[:, [4, 5, 6]]
+        self.dist_mod = obs_lg_galaxy_data[:, 7]
+        self.dist_mod_errplus = obs_lg_galaxy_data[:, 8]
+        self.dist_mod_errminus = obs_lg_galaxy_data[:, 9]
+        self.app_vmag = obs_lg_galaxy_data[:, 10]
+        # self.select_m31_satellites = obs_lg_galaxy_data[:, -1].astype(bool)
+        self.dist_m31 = obs_lg_galaxy_data[:, -3]
+        self.dist_m31[self.dist_m31 < 0] = 9999
+
+        labels = np.genfromtxt(self.lg_galaxy_data_file,
+                               delimiter=' ',
+                               usecols=0,
+                               dtype=str)
+
+        self.mw_idx = np.argwhere(labels == 'MilkyWay')[0][0]
+        self.m31_idx = np.argwhere(labels == 'M31')[0][0]
 
         return None
 
@@ -151,6 +213,8 @@ class UDGData(object):
         """
         halo_mb_mvir_ratio = []
         halo_sim_id = []
+        halo_m31_r200 = []
+        halo_mw_r200 = []
         halo_ids = []
         halo_mass_res_selection = []
         halo_selection_reff1_mu1 = []
@@ -197,6 +261,7 @@ class UDGData(object):
                 n_star_particles = f['Galaxies'][:, 13]
 
                 primary_positions = f['Primaries'][:, [1, 2, 3]]
+                primary_r200s = f['Primaries'][:, 4]  # kpc
 
                 n_los = int(f['Lines of sight'].attrs['N_LOS'])
                 los_halo_ids_with_stars = np.uint64(f['Lines of sight'][:, 0])
@@ -211,6 +276,8 @@ class UDGData(object):
 
             m31_position = primary_positions[0]
             mw_position = primary_positions[1]
+            m31_r200 = primary_r200s[0]
+            mw_r200 = primary_r200s[1]
 
             Vband_abs_mag = convert_Lsun_to_abs_mag(Vband_lxy_rlum, band='V')
             # 'Face-on'
@@ -224,10 +291,10 @@ class UDGData(object):
                 Vband_S_in_re, band='V')
 
             # Field galaxy selection
-            select_mstar_nstar_data = ((m_star >= min_mstar) *
-                                       (m_star <= max_mstar) *
-                                       (n_star_particles >= min_particles) *
-                                       (mb_mvir_ratio <= b_mvir_ratio))
+            select_mstar_nstar_data = (
+                (m_star >= min_mstar) * (m_star <= max_mstar) *
+                (n_star_particles >= min_star_particles) *
+                (mb_mvir_ratio <= b_mvir_ratio))
 
             # UDG selections based on different criteria
             select_reff1_mu1_data = (select_mstar_nstar_data *
@@ -243,8 +310,13 @@ class UDGData(object):
                                      (r_half_lum_Rband >= reff2) *
                                      (Rband_mu_mag_arsec >= mu_e2))
 
+            # Populate array with simulation ID of the given simulation
             sim_id_array = np.empty(len(halo_ids_with_stars), dtype='object')
             sim_id_array[:] = sim_id
+            m31_r200_array = np.ones(len(halo_ids_with_stars),
+                                     dtype=m31_r200.dtype) * m31_r200
+            mw_r200_array = np.ones(len(halo_ids_with_stars),
+                                    dtype=mw_r200.dtype) * mw_r200
 
             halo_Rband_mu_mag_arcsec.append(Rband_mu_mag_arsec)
             halo_Vband_mu_mag_arcsec.append(Vband_mu_mag_arsec)
@@ -252,6 +324,8 @@ class UDGData(object):
             halo_mb_mvir_ratio.append(mb_mvir_ratio)
             halo_ids.append(halo_ids_with_stars)
             halo_sim_id.append(sim_id_array)
+            halo_m31_r200.append(m31_r200_array)
+            halo_mw_r200.append(mw_r200_array)
             halo_re_lum_Rband.append(r_half_lum_Rband)
             halo_re_lum_Vband.append(r_half_lum_Vband)
             halo_mass_res_selection.append(select_mstar_nstar_data)
@@ -277,6 +351,8 @@ class UDGData(object):
             los_halo_mueff_Vband.append(los_mueff_Vband)
 
         self.simulation_id = np.concatenate(halo_sim_id)
+        self.m31_r200 = np.concatenate(halo_m31_r200)
+        self.mw_r200 = np.concatenate(halo_mw_r200)
         self.halo_ids = np.concatenate(halo_ids)
         self.select_udgs_reff1_mu1 = np.concatenate(halo_selection_reff1_mu1)
         self.select_udgs_reff1_mu2 = np.concatenate(halo_selection_reff1_mu2)

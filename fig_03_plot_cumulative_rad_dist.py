@@ -6,7 +6,8 @@ import numpy as np
 
 from common_functions import make_cumulative_function, save_figures
 from process_data import LGData, UDGData
-from universal_settings import d_lg, lg_galaxy_data_file, sim_ids, sim_styles
+from universal_settings import (d_lg, lg_galaxy_data_file, obs_m31_r200,
+                                obs_mw_r200, sim_ids, sim_styles)
 
 
 def main():
@@ -15,33 +16,66 @@ def main():
         plt.style.use('./paper.mplstyle')
     except OSError:
         pass
-    plot_max_val = 2525.
 
+    ####################################################################
     # File locations
     n_v_dist_plot = "fig3_cumulative_radial_distribution.pdf"
 
+    ####################################################################
     # Load simulation data for Fig. 3
     udg_data = UDGData()
     data_list = [
         'simulation_id', 'select_udgs_reff2_mu2', 'select_gal_mstar_nstar',
-        'dist_from_mw', 'dist_from_midpoint'
+        'dist_from_mw', 'dist_from_m31', 'dist_from_midpoint', 'm31_r200',
+        'mw_r200'
     ]
     (simulation_id, select_udgs_reff2_mu2, select_gal_mstar_nstar,
-     dist_from_mw, dist_from_midpoint) = udg_data.retrieve_data(data_list)
+     dist_from_mw, dist_from_m31, dist_from_midpoint, m31_r200,
+     mw_r200) = udg_data.retrieve_data(data_list)
+
+    min_dist_host = np.nanmin(np.column_stack((dist_from_mw, dist_from_m31)),
+                              axis=1)
+    host_r200 = np.column_stack(
+        (mw_r200, m31_r200
+         ))[np.arange(len(dist_from_mw)),
+            np.argmin(np.column_stack((dist_from_mw, dist_from_m31)), axis=1)]
 
     # Read observational data
     obs_data = LGData(lg_galaxy_data_file)
 
     # Observed field galaxy cumulative radial distribution
-    field_dist = obs_data.dist[obs_data.select_field_galaxies]
-    field_dist_errplus = obs_data.dist_errplus[obs_data.select_field_galaxies]
-    field_dist_errminus = obs_data.dist_errminus[
+    obs_host_r200s = np.ones((len(obs_data.dist_rel_mw), 2))
+    obs_host_r200s[:, 0] *= obs_mw_r200
+    obs_host_r200s[:, 1] *= obs_m31_r200
+    rel_dists = np.column_stack((obs_data.dist_rel_mw, obs_data.dist_rel_m31))
+    rel_dists_errminus = np.column_stack(
+        (obs_data.dist_errminus_rel_mw, obs_data.dist_errminus_rel_m31))
+    rel_dists_errplus = np.column_stack(
+        (obs_data.dist_errplus_rel_mw, obs_data.dist_errplus_rel_m31))
+
+    # Select observed field galaxies by nearest host (rough
+    # approximation)
+    dist_sel_idx = np.nanargmin(rel_dists, axis=1)
+    dist_selections = (np.arange(len(dist_sel_idx)), dist_sel_idx)
+
+    field_dist = rel_dists[dist_selections][obs_data.select_field_galaxies]
+    field_dist_errplus = rel_dists_errplus[dist_selections][
+        obs_data.select_field_galaxies]
+    field_dist_errminus = rel_dists_errminus[dist_selections][
         obs_data.select_field_galaxies]
 
+    field_host_r200 = obs_host_r200s[dist_selections][
+        obs_data.select_field_galaxies]
+
+    # chi = r / R200
+    field_chi = field_dist / field_host_r200
+    field_chi_errplus = field_dist_errplus / field_host_r200
+    field_chi_errminus = field_dist_errminus / field_host_r200
+
     # Cumulative function and errors
-    (d_field, d_field_plus,
-     d_field_minus), n_field = make_field_cumulative_function(
-         field_dist, field_dist_errplus, field_dist_errminus, plot_max_val)
+    (chi_field, chi_field_plus,
+     chi_field_minus), n_field = make_field_cumulative_function(
+         field_chi, field_chi_errplus, field_chi_errminus, 11.)
 
     ####################################################################
     # Print out relevant information
@@ -60,40 +94,39 @@ def main():
         print_results(udgs_in_sim,
                       field_in_sim,
                       distances=dist_from_midpoint / 1.e3,
-                      target_distance=1.,
+                      target_distance=1.5,
                       relative_to='LG',
                       compare_distance=2.5)
         print('------')
         print_results(udgs_in_sim,
                       field_in_sim,
-                      distances=dist_from_mw / 1.e3,
+                      distances=min_dist_host / 1.e3,
                       target_distance=2.5,
-                      relative_to='MW')
+                      relative_to='nearest host')
         print_results(udgs_in_sim,
                       field_in_sim,
-                      distances=dist_from_mw / 1.e3,
-                      target_distance=1.,
-                      relative_to='MW',
-                      compare_distance=2.5)
+                      distances=min_dist_host / 1.e3,
+                      target_distance=1.5,
+                      relative_to='nearest host')
         print('##########')
 
     ####################################################################
     # Plot N vs. distance (by sim)
     ####################################################################
-    fig, (ratio_ax, cdf_ax) = plt.subplots(2,
-                                           1,
-                                           sharex=True,
-                                           figsize=(8, 8),
-                                           gridspec_kw={
-                                               'hspace': 0,
-                                               'wspace': 0,
-                                               'height_ratios': [1, 3],
-                                           })
+    fig, (udg_ratio_ax, cdf_ax) = plt.subplots(2,
+                                               1,
+                                               sharex=True,
+                                               figsize=(8, 8),
+                                               gridspec_kw={
+                                                   'hspace': 0,
+                                                   'wspace': 0,
+                                                   'height_ratios': [1, 3]
+                                               })
 
     print()
     for s_i, sim_id in enumerate(sim_ids):
         galaxies_in_sim = simulation_id == sim_id
-        select_sim_distance = (np.around(dist_from_mw, 2) <=
+        select_sim_distance = (np.around(min_dist_host, 2) <=
                                (d_lg * 1.e3))  # kpc
         select_sim_udgs = (galaxies_in_sim * select_udgs_reff2_mu2 *
                            select_sim_distance)
@@ -106,16 +139,18 @@ def main():
         print("N_field,tot: {:>3}".format(select_sim_field.sum()))
         print("---------------")
 
+        # Simulation UDGs
         d_udg, n_udgs = make_cumulative_function(
-            dist_from_mw[select_sim_udgs],
+            min_dist_host[select_sim_udgs] / host_r200[select_sim_udgs],
             min_val=0.,
-            max_val=plot_max_val,
-            bins=dist_from_mw[select_sim_field])
+            max_val=11,
+            bins=min_dist_host[select_sim_field] / host_r200[select_sim_field])
+        # Simulation UDGs + other field galaxies
         d_all, n_all = make_cumulative_function(
-            dist_from_mw[select_sim_field],
+            min_dist_host[select_sim_field] / host_r200[select_sim_field],
             min_val=0.,
-            max_val=plot_max_val,
-            bins=dist_from_mw[select_sim_field])
+            max_val=11,
+            bins=min_dist_host[select_sim_field] / host_r200[select_sim_field])
 
         # Plot UDGs
         udg_line, = cdf_ax.plot(d_udg,
@@ -132,18 +167,18 @@ def main():
                     color=udg_line.get_color())
 
         # Plot ratio N_UDG(<r) / N_field(<r)
-        ratio_ax.plot(d_all,
-                      n_udgs / n_all,
-                      lw=1.75,
-                      color=udg_line.get_color(),
-                      drawstyle='steps-post',
-                      label=sim_id.replace('_', '\_'))
+        udg_ratio_ax.plot(d_udg,
+                          n_udgs / n_udgs[-1],
+                          lw=1.75,
+                          color=udg_line.get_color(),
+                          drawstyle='steps-post',
+                          label=sim_id.replace('_', '\_'))
 
         # Plot incomplete census of observed field galaxies
         if s_i == 0:
-            cdf_ax.errorbar(d_field,
+            cdf_ax.errorbar(chi_field,
                             n_field,
-                            xerr=np.asarray([d_field_minus, d_field_plus]),
+                            xerr=np.asarray([chi_field_minus, chi_field_plus]),
                             marker='.',
                             color='k',
                             markersize=5,
@@ -158,24 +193,28 @@ def main():
 
     ####################################################################
     # Axis settings
-    cdf_ax.set(xlabel=r'$r_{\rm MW}\, \left({\rm kpc}\right)$',
-               ylabel=r'$N\!\left(<r_{\rm MW}\right)$',
-               xlim=[0., plot_max_val],
+    cdf_ax.set(xlabel=r'$\chi = r_{\rm nearest\; host}\, /\, R_{\rm 200}$',
+               ylabel=r'$N\!\left(< \chi\right)$',
+               xlim=[0.95, 11.],
                ylim=[0., None])
-    ratio_ax.set(ylabel=r'$N_{\rm UDG}\, /\, N_{\rm f\kern0ptield}$',
-                 ylim=[0., 1.05])
     cdf_ax.minorticks_on()
-    ratio_ax.minorticks_on()
+    udg_ratio_ax.set(ylabel=r'$N_{\rm UDG}\, /\, N_{\rm UDG,\, tot}$',
+                     ylim=[0., 1.05])
+    udg_ratio_ax.minorticks_on()
+    udg_ratio_ax.axhline(0.5, color='k', linestyle=':', zorder=0)
 
     ####################################################################
     # Add legends
     ####################################################################
     # Colour-coded simulation legend in top panel
-    sim_leg = ratio_ax.legend(loc='upper right',
-                              handlelength=0,
-                              handletextpad=0,
-                              labelspacing=0.1,
-                              borderpad=0.05)
+    sim_leg = udg_ratio_ax.legend(loc='lower right',
+                                  handlelength=0,
+                                  handletextpad=0,
+                                  labelspacing=0.1,
+                                  borderpad=0.2,
+                                  frameon=True,
+                                  fancybox=True,
+                                  framealpha=1)
     for t_item, sim_id in zip(sim_leg.get_texts(), sim_ids):
         t_item.set_color(sim_styles[sim_id]['color'])
 
@@ -191,6 +230,8 @@ def main():
                   loc='upper left')
 
     save_figures(fig, n_v_dist_plot)
+
+    plt.show()
 
     return None
 

@@ -183,6 +183,8 @@ def main():
 
     save_figures(fig_rlum, r_eff_mu_plot_by_sim)
 
+    plt.show()
+
     return None
 
 

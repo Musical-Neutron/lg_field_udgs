@@ -7,18 +7,24 @@ import numpy as np
 # Simulations
 sim_n_part = 8192
 sim_ids = ['09_18', '17_11', '37_11']
+
+# Cosmology
 h = 0.6777  # Hubble parameter
+# rho_crit = 127.46  # Msun / kpc^3
 
 # Analysis settings
 n_sightings = 15000  # Number of mock SDSS observations per halo
 MV_bins = np.arange(-20, -10, 0.5)  # Luminosity function bins
 fiducial_lg_mass = 8.e12
-target_lg_masses = np.asarray([0.7e13, 0.8e13, 0.9e13])
+target_lg_masses = np.asarray(
+    [0.3e13, 0.4e13, 0.5e13, 0.6e13, 0.7e13, 0.8e13, 0.9e13])
 zoa_extent_list = [5., 10., 15.]  # |b| <= x [deg]
+obs_mw_r200 = 230.  # kpc
+obs_m31_r200 = 275.  # kpc
 
 # Survey settings
-sdss_mu_lim = 26.5  # Surface brightness limit (r-band) [mag / arcsec2]
-des_mu_lim = 27.86  # Surface brightness limit (r-band) [mag / arcsec2]
+sdss_mu_lim = 29.  # Surface brightness limit (r-band) [mag / arcsec2]
+des_mu_lim = 30.  # Surface brightness limit (r-band) [mag / arcsec2]
 lsst_mu_lim = 31.  # Surface brightness limit (r-band) [mag / arcsec2]
 sdss_app_mv_lim = 16.  # Apparent magnitude limit (V-band) [mag]
 des_app_mv_lim = 17.5  # Apparent magnitude limit (V-band) [mag]
@@ -27,7 +33,7 @@ lsst_app_mv_lim = 21.5  # Apparent magnitude limit (V-band) [mag]
 
 # UDG selection criteria
 b_mvir_ratio = 0.5  # M_baryon / M_virial
-min_particles = 50  # Minimum number of star particles
+min_star_particles = 50  # Minimum number of star particles
 reff = 1.  # Effective radius [kpc]
 reff2 = 1.5  # Effective radius [kpc]
 mu_e = 23.5  # Surface brightness within reff [mag arcsec^-2]
@@ -40,7 +46,7 @@ d_lg = 2.5  # Radius of the Local Group [Mpc]
 data_dir = "data"
 generated_data_file_template = os.path.join(data_dir,
                                             '{}_{}_generated_paper_data.hdf5')
-lg_galaxy_data_file = os.path.join(data_dir, 'mcconnachie_2012_data.csv')
+lg_galaxy_data_file = os.path.join(data_dir, 'mcconnachie_savino_subset.csv')
 fattahi_data_file = os.path.join(data_dir, 'fattahi_2020_N_vs_M.csv')
 survey_data_file = os.path.join(data_dir, 'survey_data.csv')
 udg_file_template = os.path.join(data_dir, '{}_{}_z0_paper_data.hdf5')

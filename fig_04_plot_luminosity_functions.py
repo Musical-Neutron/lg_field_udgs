@@ -29,10 +29,10 @@ def main():
     ################################################################
     # Combined absolute and apparent LFs (by sim)
     ################################################################
-    fig, axs = plt.subplots(1, 2, figsize=(16, 8), gridspec_kw={'hspace': 0})
-
-    ax_abs = axs[0]
-    ax_app = axs[1]
+    fig, (ax_abs, ax_app) = plt.subplots(1,
+                                         2,
+                                         figsize=(16, 8),
+                                         gridspec_kw={'hspace': 0})
 
     for sim_id in sim_ids:
         print(sim_id)
@@ -171,6 +171,8 @@ def main():
     ax_app.add_artist(orig_leg)
 
     save_figures(fig, lf_abs_app_file)
+
+    plt.show()
 
     return None
 
