@@ -22,14 +22,13 @@ There are six scripts that can be executed independently:
   &mu;<sub>e</sub>, of all candidate UDGs.
 * Fig. 3: [fig_03_plot_cumulative_rad_dist.py](/fig_03_plot_cumulative_rad_dist.py)
   * Plots the cumulative number of UDGs as a function of distance from the
-  Milky Way (MW) halo analogue. By convention this is the smaller of the two
-  primary haloes.
+  nearest host halo analogue.
 * Fig. 4: [fig_04_plot_luminosity_functions.py](/fig_04_plot_luminosity_functions.py)
   * Plots the luminosity function of the UDG populations as a function of
   _V_-band absolute and apparent magnitudes.
 * Fig. 5: [fig_05_plot_mock_sdss_observations.py](/fig_05_plot_mock_sdss_observations.py)
   * Plots the luminosity functions of UDGs that are detectable in SDSS-like
-  surveys in each HESTIA high resolution simulation.
+  surveys in each HESTIA high-resolution simulation.
 * [print_paper_results.py](/print_paper_results.py)
   * Prints information relevant to the paper to stdout.
 
@@ -42,10 +41,12 @@ and .pdf versions of each figure in the paper.
   * A set of functions common to more than one of the main scripts.
 * [process_data.py](/process_data.py)
   * Contains classes and functions to handle basic processing of data.
+* [universal_settings.py](/universal_settings.py)
+  * Contains all settings pertinent to the analysis.
 
 ## 2.0 Data
 
-The [data](/data) directory that contains all files necessary to reproduce the
+The [data](/data) directory contains all files necessary to reproduce the
 figures in the paper. There are eight files:
 
 * [8192_09_18_z0_paper_data.hdf5](/data/8192_09_18_z0_paper_data.hdf5)
@@ -59,17 +60,18 @@ figures in the paper. There are eight files:
 * [k08_mag_d_data.csv](/data/k08_mag_d_data.csv)
 * [k08_mu_d_data.csv](/data/k08_mu_d_data.csv)
   * Both contain relevant data from [Koposov et al. (2008)](https://arxiv.org/abs/0706.2687)
-* [mcconnachie_2012_data.csv](/data/mcconnachie_2012_data.csv)
-  * Contains data from [McConnachie et al. (2012)](https://arxiv.org/abs/1204.1562),
-  including updates from the [Nearby Dwarf Database](https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/community/nearby/)
+* [mcconnachie_savino_subset.csv](/data/mcconnachie_savino_subset.csv)
+  * Contains a subset of data from [McConnachie et al. (2012)](https://arxiv.org/abs/1204.1562),
+  including updates from the [Nearby Dwarf Database](https://www.cadc-ccda.hia-iha.nrc-cnrc.gc.ca/en/community/nearby/).
+  This is combined with some data from [Savino et al. (2022)](https://arxiv.org/abs/2206.02801).
 * [survey_data.csv](/data/survey_data.csv)
-  * Contains data relevant to the SDSS (and other surveys)
+  * Contains data relevant to the SDSS, DES, and LSST.
 
 ## 3.0 Citations
 
 This code and the accompanying data are freely available.
 
-### If you use this code or derivative work
+### If you use this code or derivative work please cite
 
 * [O. Newton et al. (2022)](http://arxiv.org/abs/2212.05066)
 * Please cite this repository (the up-to-date version will be archived in
