@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
+
 # Place import files below
 import os
-import numpy as np
 import warnings
+
+import numpy as np
 
 warnings.filterwarnings(action='ignore', category=RuntimeWarning)
 
@@ -124,4 +126,13 @@ def survey_cone(survey_area):
 
 
 def v_sphere(r):
+    """Calculates the volume of a sphere.
+
+    Args:
+        r (fl/arr): Float or array of floats specifying the radius of
+            the spheres.
+
+    Returns:
+        fl/arr: Volume of the sphere(s).
+    """
     return 4. * np.pi * r**3 / 3.

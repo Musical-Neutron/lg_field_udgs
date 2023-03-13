@@ -275,23 +275,6 @@ def main():
     print("#" * 50)
 
     ####################################################################
-    # # Same as above but for the full list of target LG masses
-    # for t_i, t_mass in enumerate(target_lg_masses):
-    #     print("-" * 50)
-    #     print("Local Group mass, M_LG(< {} Mpc) = {:.0f} x 10^12 Msun".format(
-    #         d_lg, t_mass / 1.e12))
-    #     max_n = np.nanmax(nudg_mock_sdss_by_tmlg[:, :, t_i])
-    #     tot_obs = len(nudg_mock_sdss_by_tmlg[:, :, t_i][0])
-    #     print("Selection: " + selection_fields.format(*selection))
-    #     for n in np.arange(np.nanmax(max_n) + 1):
-    #         n_obs = (nudg_mock_sdss_by_tmlg[:, :, t_i] <= n).sum(axis=1)
-    #         frac = n_obs / tot_obs
-    #         fields = "{:.4f} " * len(frac)
-    #         print("N = {:2d}:    ".format(int(n)) + fields.format(*frac))
-    #     print()
-    # print("#" * 50)
-
-    ####################################################################
     # Print fraction of UDGs in ZoA
     print("Fraction of field UDGs coincident with ZoA")
     selection = np.arange(len(udg_selection_criteria)) + 1

@@ -172,8 +172,6 @@ def main():
 
     save_figures(fig, lf_abs_app_file)
 
-    plt.show()
-
     return None
 
 

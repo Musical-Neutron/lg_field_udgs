@@ -99,8 +99,6 @@ def main():
 
     save_figures(fig, mock_output_file)
 
-    plt.show()
-
     return None
 
 

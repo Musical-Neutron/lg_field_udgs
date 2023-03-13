@@ -11,26 +11,10 @@ from scipy.special import erfc
 from common_functions import make_cumulative_function, survey_cone, v_sphere
 from process_data import FattahiData, UDGData
 from universal_settings import (
-    MV_bins,
-    d_lg,
-    des_mu_lim,  # sim_ids,
-    fattahi_data_file,
-    generated_data_file_template,
-    h,
-    k08_mu_vs_d_file,
-    k08_mv_vs_d_file,
-    lsst_mu_lim,
-    mass_in_lg_file,
-    mu_e,
-    mu_e2,
-    n_sightings,
-    reff,
-    reff2,
-    sdss_mu_lim,
-    sim_n_part,
-    survey_data_file,
-    target_lg_masses,
-    zoa_extent_list)
+    MV_bins, d_lg, des_mu_lim, fattahi_data_file, generated_data_file_template,
+    h, k08_mu_vs_d_file, k08_mv_vs_d_file, lsst_mu_lim, mass_in_lg_file, mu_e,
+    mu_e2, n_sightings, reff, reff2, sdss_mu_lim, sim_n_part, survey_data_file,
+    target_lg_masses, zoa_extent_list)
 
 
 def main():
@@ -48,15 +32,15 @@ def main():
         'app_mag_Vband_rel_m31', 'rband_mu_mag_arsec', 'position_rel_mw',
         'position_rel_m31', 'n_los', 'los_simulation_id', 'los_halo_ids',
         'los_re_rband', 'los_mue_rband', 'los_mue_Vband',
-        'select_gal_mstar_nstar', 're_rband', 'Vband_mu_mag_arsec'
+        'select_gal_mstar_nstar'
     ]
     (simulation_id, halo_ids, select_udgs_reff1_mu1, select_udgs_reff1_mu2,
      select_udgs_reff2_mu1, select_udgs_reff2_mu2, dist_from_mw, dist_from_m31,
      dist_from_midpoint, abs_mag_Vband, app_mag_Vband_rel_mw,
      app_mag_Vband_rel_m31, rband_mu_mag_arsec, position_rel_mw,
      position_rel_m31, n_los, los_simulation_id, los_halo_ids, los_re_rband,
-     los_mueff_rband, los_mueff_Vband, select_gal_mstar_nstar, re_rband,
-     Vband_mu_mag_arsec) = udg_data.retrieve_data(data_list)
+     los_mueff_rband, los_mueff_Vband,
+     select_gal_mstar_nstar) = udg_data.retrieve_data(data_list)
 
     copy_mue_rband = copy.deepcopy(rband_mu_mag_arsec)
 

@@ -231,8 +231,6 @@ def main():
 
     save_figures(fig, n_v_dist_plot)
 
-    plt.show()
-
     return None
 
 
