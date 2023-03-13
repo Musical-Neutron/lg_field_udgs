@@ -1,6 +1,6 @@
 # Plot scripts for the HESTIA UDG paper
 
-**Last reviewed:** v0.3.1
+**Last reviewed:** v1.0.0
 
 A set of scripts and a repository of reduced data to reproduce the figures in
 the paper predicting the size of the ultra-diffuse galaxy (UDG) population in
