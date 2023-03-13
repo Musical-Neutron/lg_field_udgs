@@ -1,12 +1,12 @@
 # Plot scripts for the HESTIA UDG paper
 
-**Last reviewed:** v0.2
+**Last reviewed:** v0.2.1
 
-A set of scripts and a repository of reduced data to reproduce the plots in the
-paper predicting the size of the ultra-diffuse galaxy (UDG) population in the
-field of the Local Group using simulations from the HESTIA suite.
+A set of scripts and a repository of reduced data to reproduce the figures in
+the paper predicting the size of the ultra-diffuse galaxy (UDG) population in
+the field of the Local Group using simulations from the HESTIA suite.
 
-This README file is located in the main repository for the plotting scripts.
+This README file is located in the main repository of the plotting scripts.
 All plotting scripts should be executed from this directory.
 
 ## 1.0 Scripts
@@ -18,8 +18,8 @@ There are six scripts that can be executed independently:
   Primarily concerns preparing the data for the mock SDSS observations.
   * MUST be run first to ensure that the other scripts operate correctly.
 * Fig. 1: [fig_01_plot_selection_criteria.py](/fig_01_plot_selection_criteria.py)
-  * Plots effective radius, R<sub>e</sub>, vs. effective surface brightness,
-  &mu;<sub>e</sub>, of all candidate UDGs.
+  * Plots effective radius, _R_<sub>e</sub>, vs. effective surface brightness,
+  _&mu;_<sub>e</sub>, of all candidate UDGs.
 * Fig. 3: [fig_03_plot_cumulative_rad_dist.py](/fig_03_plot_cumulative_rad_dist.py)
   * Plots the cumulative number of UDGs as a function of distance from the
   nearest host halo analogue.
@@ -73,15 +73,13 @@ This code and the accompanying data are freely available.
 
 ### If you use this code or derivative work please cite
 
-* [O. Newton et al. (2022)](http://arxiv.org/abs/2212.05066)
-* Please cite this repository (the up-to-date version will be archived in
-Zenodo upon acceptance)
+* [O. Newton et al. (2023)](http://arxiv.org/abs/2212.05066)
+* this repository (the up-to-date version will be archived in Zenodo upon acceptance)
 
-### If you use these data, a derivative work, or results thereof
+### If you use these data, a derivative work, or results thereof please cite
 
-* [O. Newton et al. (2022)](http://arxiv.org/abs/2212.05066)
-* Please cite this repository (the up-to-date version will be archived in
-Zenodo upon acceptance)
+* [O. Newton et al. (2023)](http://arxiv.org/abs/2212.05066)
+* this repository (the up-to-date version will be archived in Zenodo upon acceptance)
 * [N. Libeskind et al. (2020)](https://doi.org/10.1093/mnras/staa2541)
 
 If you have any questions or would like help in using the scripts, please
