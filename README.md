@@ -1,6 +1,8 @@
 # Plot scripts for the HESTIA UDG paper
 
-**Last reviewed:** v1.0.0
+[![DOI](https://zenodo.org/badge/577241879.svg)](https://zenodo.org/badge/latestdoi/577241879)
+
+**Last reviewed:** v1.1.0
 
 A set of scripts and a repository of reduced data to reproduce the figures in
 the paper predicting the size of the ultra-diffuse galaxy (UDG) population in
@@ -73,13 +75,13 @@ This code and the accompanying data are freely available.
 
 ### If you use this code or derivative work please cite
 
-* [O. Newton et al. (2023)](http://arxiv.org/abs/2212.05066)
-* this repository (the up-to-date version will be archived in Zenodo upon acceptance)
+* [O. Newton et al. (2023)](https://doi.org/10.3847/2041-8213/acc2bb)
+* [O. Newton (2023)](https://doi.org/10.5281/zenodo.7729995)
 
 ### If you use these data, a derivative work, or results thereof please cite
 
-* [O. Newton et al. (2023)](http://arxiv.org/abs/2212.05066)
-* this repository (the up-to-date version will be archived in Zenodo upon acceptance)
+* [O. Newton et al. (2023)](https://doi.org/10.3847/2041-8213/acc2bb)
+* [O. Newton (2023)](https://doi.org/10.5281/zenodo.7729995)
 * [N. Libeskind et al. (2020)](https://doi.org/10.1093/mnras/staa2541)
 
 If you have any questions or would like help in using the scripts, please

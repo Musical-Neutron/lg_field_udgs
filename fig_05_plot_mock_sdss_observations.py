@@ -86,7 +86,7 @@ def main():
     # Colour-coded simulation legend
     orig_leg = ax.legend(loc='upper right', handlelength=0, handletextpad=0)
     for t_item, h_item, sim_id in zip(orig_leg.get_texts(),
-                                      orig_leg.legendHandles, sim_ids):
+                                      orig_leg.legend_handles, sim_ids):
         t_item.set_color(h_item.get_color())
         h_item.set_visible(False)
     # Analogue halo legend in lower panel
