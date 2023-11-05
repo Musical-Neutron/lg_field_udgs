@@ -3,7 +3,7 @@ build==1.0.3
 click==8.1.7
 contourpy==1.1.1
 cycler==0.12.1
-fonttools==4.43.1
+fonttools==4.44.0
 h5py==3.10.0
 kiwisolver==1.4.5
 numpy <1.27
