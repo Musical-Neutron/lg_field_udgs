@@ -1,5 +1,5 @@
 astropy==6.0.0
-build==1.0.3
+build==1.1.1
 click==8.1.7
 contourpy==1.2.0
 cycler==0.12.1
